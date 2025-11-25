@@ -1,0 +1,50 @@
+# Build artifacts
+/target/
+/build/
+/bin/
+
+# IDE files
+.idea/
+.vscode/
+.settings/
+.classpath
+.project
+.factorypath
+.metadata/
+*.iml
+*.iws
+*.ipr
+*.launch
+
+# Maven/Gradle specific files
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+build/
+.gradle/
+!gradle-wrapper.jar # Include Gradle wrapper if desired
+
+# Log files
+*.log
+logs/
+
+# Environment-specific files
+*.env
+.env.*
+application*.properties
+application*.yml
+!application.properties # Include default application properties if desired
+!application.yml # Include default application YAML if desired
+
+# Operating System files
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Temporary files
+*.tmp
+*.bak
+*~
