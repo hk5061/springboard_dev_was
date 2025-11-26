@@ -10,6 +10,8 @@ class SpringBootBoardApplicationTests {
 	@Test
 	void databaseConnection() {
 		
+		User user = new User();
+		String name = user.getName();
 		
 	}
 
