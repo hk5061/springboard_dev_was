@@ -34,7 +34,7 @@ logs/
 # Environment-specific files
 *.env
 .env.*
-application*.properties
+#application*.properties
 application*.yml
 !application.properties # Include default application properties if desired
 !application.yml # Include default application YAML if desired
