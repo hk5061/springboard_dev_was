@@ -9,6 +9,9 @@ import com.home.board.repository.CommentRepository;
 import com.home.board.repository.MemberRepository;
 import com.home.board.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +23,8 @@ import java.util.stream.Collectors;
 @Transactional
 @RequiredArgsConstructor
 public class MemberService {
+	
+	private static final Logger logger = LoggerFactory.getLogger(MemberService.class);
 
     private final PostRepository postRepository;
     private final MemberRepository memberRepository;
@@ -38,6 +43,9 @@ public class MemberService {
     }
 
     public ResponseData<String> loginIdDuplicate(String loginId) {
+    	
+    	logger.info("[MemberService] loginIdDuplicate > " + loginId);
+    	
         if (memberRepository.findByLoginId(loginId).isPresent()) {
             return new ResponseData<>(Header.badRequest("존재하는 아이디입니다."), "");
         }

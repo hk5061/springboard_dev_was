@@ -80,11 +80,11 @@
 
 <script th:inline="javascript">
     const backPage = () => {
-        location.href = "http://localhost:8081/"
+        location.href = "http://localhost:8080/"
     }
 
     const movePostInfoPage = (res) => {
-        location.href = "http://localhost:8081/posts/" + $(res).children().eq(0).attr('id');
+        location.href = "http://localhost:8080/posts/" + $(res).children().eq(0).attr('id');
     }
 
     const findPostPages = (page) => {
@@ -92,7 +92,7 @@
         console.log(title);
         const category = $('#searchCategory').val();
         console.log(category);
-        location.href = "http://localhost:8081/posts?page=" + page
+        location.href = "http://localhost:8080/posts?page=" + page
             + "&postTitle=" + title + "&postCategory=" + category;
     }
 </script>

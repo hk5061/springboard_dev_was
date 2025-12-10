@@ -1,14 +1,28 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="sec" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="th" uri="http://java.sun.com/jsp/jstl/functions"%>
 <!DOCTYPE html>
-<html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
+    <meta charset="UTF-8">
+    <title>메인</title>
+    
+    <link rel="stylesheet" type="text/css" href="/css/jumbotron-narrow.css">
+    <script src="/js/jquery-3.6.0.min.js"></script>
+    
+    
 </head>
 <body>
-
-	Hello!!!
-
+	<h1>메인 페이지</h1>
+	<hr>
+	
+	<a sec:authorize="isAnonymous()" th:href="@{/login}">로그인</a> <!--익명 사용자-->
+	<a sec:authorize="isAuthenticated()" th:href="@{/logout}">로그아웃</a>  <!--인증된 사용자-->
+	<a sec:authorize="isAnonymous()" th:href="@{/signup}">회원가입</a>
+	<a sec:authorize="hasRole('ROLE_MEMBER')" th:href="@{/info}">내정보</a>  <!--특정 Role 가진 사용-->
+	<a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/admin}">어드민</a>
+	
+	
 </body>
 </html>

@@ -5,6 +5,9 @@ import com.home.board.dto.response.ResponseData;
 import com.home.board.exception.CommentNotExistException;
 import com.home.board.exception.PostNotExistException;
 import lombok.extern.slf4j.Slf4j;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
@@ -19,10 +22,16 @@ import java.time.format.DateTimeFormatter;
 @Slf4j
 @ControllerAdvice
 public class ExceptionController {
+	
+	private static final Logger logger = LoggerFactory.getLogger(ExceptionController.class);
+	
 
     // 메서드가 잘못되었거나, 적합 또는 적절하지 않은 인자를 메서드에 전달 했을때 발생
     @ExceptionHandler(IllegalArgumentException.class)
     public String illegalArgumentExceptionHandler(IllegalArgumentException e, Model model) {
+    	
+    	logger.error("ExceptionController > illegalArgumentExceptionHandler ");
+    	
         model.addAttribute("status", "400");
         model.addAttribute("type", "BAD_REQUEST");
         model.addAttribute("timestamp", LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS")));
