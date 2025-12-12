@@ -10,6 +10,7 @@
         <p class="lead">회원 기능</p>
         <p>
             <a class="btn btn-lg btn-secondary" href="/login" sec:authorize="isAnonymous()">로그인</a>
+            <a class="btn btn-lg btn-secondary" href="/kakao/oauth" sec:authorize="isAnonymous()">카카오 로그인</a>
             <a class="btn btn-lg btn-secondary" href="/members/new" sec:authorize="isAnonymous()">회원 가입</a>
             <a class="btn btn-lg btn-secondary" href="/logout" sec:authorize="isAuthenticated()">로그아웃</a>
             <a class="btn btn-lg btn-secondary" href="/members" sec:authorize="isAuthenticated()">회원 정보</a>

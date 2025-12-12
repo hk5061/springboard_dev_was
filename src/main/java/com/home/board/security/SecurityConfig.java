@@ -59,7 +59,8 @@ public class SecurityConfig {
             // 2. HTTP 요청 인가 설정 (authorizeRequests -> authorizeHttpRequests)
             .authorizeHttpRequests(auth -> auth
                 // mvcMatchers -> requestMatchers 변경
-                .requestMatchers("/", "/members/new", "/favicon.ico", "/error", "/css/**", "/js/**", "/image/**", "/api/comments").permitAll()
+                .requestMatchers("/", "/members/new", "/favicon.ico", "/error", "/css/**", "/js/**", "/images/**", "/api/comments", "/kakao/**")
+                	.permitAll()
                 .requestMatchers(HttpMethod.PATCH, "/api/childs").permitAll()
                 .requestMatchers(HttpMethod.GET, "/posts", "/posts/*", "/api/**").permitAll()
                 .requestMatchers(HttpMethod.POST, "/posts").hasAnyRole("ADMIN", "MANAGER", "USER")

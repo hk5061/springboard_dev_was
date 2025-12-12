@@ -19,7 +19,7 @@ public class HomeController {
     @GetMapping("/")
     public String index() {
     	
-    	logger.info("home 화면 실행");
+    	logger.info("[HomeController][index]home 화면 실행");
     	
         return "home"; // resources:templates/home.html 반환
     }
