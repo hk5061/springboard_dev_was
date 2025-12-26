@@ -20,4 +20,9 @@ public class AuthController {
     public String logout() {
         return "redirect:/login?logout";
     }
+    
+    @GetMapping("/main")
+    public String main() {
+        return "main";
+    }
 }
