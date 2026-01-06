@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>미니게임 천국</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* 모바일 앱 느낌을 위한 폰트 및 기본 설정 */
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap');
+        
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            -webkit-tap-highlight-color: transparent; /* 모바일 터치 하이라이트 제거 */
+            background-color: #f3f4f6;
+        }
+
+        /* 게임 카드 눌렸을 때 효과 */
+        .game-card:active {
+            transform: scale(0.95);
+            transition: transform 0.1s;
+        }
+        
+        /* 스크롤바 숨기기 (깔끔한 UI) */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="h-screen w-full max-w-md mx-auto bg-white shadow-xl overflow-hidden flex flex-col relative">
+
+    <!-- 1. 상단 헤더 -->
+    <header class="bg-indigo-600 text-white p-4 flex items-center justify-between shadow-md z-10">
+        <h1 class="text-xl font-bold flex items-center gap-2">
+            <span>🎮</span> 미니게임 포털
+        </h1>
+        <div class="text-xs bg-indigo-500 px-2 py-1 rounded-full">
+            Total Plays: <span id="total-plays">0</span>
+        </div>
+    </header>
+
+    <!-- 2. 메인 콘텐츠 영역 (스크롤 가능) -->
+    <main id="main-content" class="flex-1 overflow-y-auto p-4 no-scrollbar relative">
+        
+        <!-- [View 1] 게임 그리드 화면 -->
+        <div id="grid-view" class="transition-opacity duration-300">
+            <h2 class="text-gray-700 font-bold mb-4 text-lg">인기 게임 목록</h2>
+            
+            <!-- 3x3 그리드 컨테이너 -->
+            <div class="grid grid-cols-3 gap-3" id="game-grid">
+                <!-- 자바스크립트로 카드가 생성됩니다 -->
+            </div>
+
+            <!-- 하단 배너 (예시) -->
+            <div class="mt-6 bg-gradient-to-r from-pink-500 to-orange-400 rounded-xl p-4 text-white text-center shadow-lg">
+                <p class="font-bold text-lg">🔥 오늘의 추천</p>
+                <p class="text-sm opacity-90">친구와 함께 랭킹 도전!</p>
+            </div>
+        </div>
+
+        <!-- [View 2] 게임 상세 화면 (처음엔 숨김) -->
+        <div id="detail-view" class="hidden absolute top-0 left-0 w-full h-full bg-white p-4 flex flex-col">
+            <!-- 뒤로가기 버튼 -->
+            <button onclick="goBack()" class="mb-4 flex items-center text-gray-600 hover:text-indigo-600 font-bold">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                </svg>
+                목록으로
+            </button>
+
+            <!-- 게임 실행 영역 -->
+            <div class="flex-1 flex flex-col items-center">
+                <div id="detail-icon" class="text-6xl mb-4 animate-bounce"></div>
+                <h2 id="detail-title" class="text-2xl font-bold text-gray-800 mb-2"></h2>
+                
+                <div class="bg-gray-100 px-4 py-2 rounded-full text-sm text-gray-500 mb-6">
+                    누적 실행 횟수: <span id="detail-count" class="text-indigo-600 font-bold">0</span>회
+                </div>
+
+                <!-- 게임 화면 플레이스홀더 (iframe 대신 시각적 예시) -->
+                <div class="w-full aspect-[4/5] bg-gray-900 rounded-xl flex flex-col items-center justify-center text-white relative overflow-hidden shadow-inner border-4 border-gray-800">
+                    <div class="absolute inset-0 bg-gradient-to-br from-gray-800 to-black opacity-50"></div>
+                    <div class="z-10 text-center p-6">
+                        <p class="text-3xl mb-2">▶️</p>
+                        <p class="font-bold text-lg">게임 로딩 중...</p>
+                        <p class="text-xs text-gray-400 mt-2">여기에 실제 게임 iframe이 들어갑니다.</p>
+                        <button class="mt-8 bg-indigo-500 hover:bg-indigo-600 text-white px-6 py-2 rounded-full font-bold transition">
+                            게임 시작하기
+                        </button>
+                    </div>
+                </div>
+
+                <div class="mt-6 w-full">
+                    <h3 class="font-bold text-gray-700 mb-2">게임 설명</h3>
+                    <p id="detail-desc" class="text-sm text-gray-500 bg-gray-50 p-3 rounded-lg border border-gray-200">
+                        <!-- 설명 텍스트 -->
+                    </p>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- 3. 하단 네비게이션 (앱 느낌) -->
+    <nav class="bg-white border-t border-gray-200 flex justify-around p-3 text-xs text-gray-400">
+        <button onclick="goBack()" class="flex flex-col items-center text-indigo-600">
+            <span class="text-xl">🏠</span>
+            <span class="mt-1">홈</span>
+        </button>
+        <button class="flex flex-col items-center hover:text-gray-600">
+            <span class="text-xl">🏆</span>
+            <span class="mt-1">랭킹</span>
+        </button>
+        <button class="flex flex-col items-center hover:text-gray-600">
+            <span class="text-xl">👤</span>
+            <span class="mt-1">내정보</span>
+        </button>
+    </nav>
+
+    <script>
+        // --- 1. 데이터 설정 ---
+        const games = [
+            { id: 1, title: "점프왕", icon: "🐸", color: "bg-green-100", desc: "장애물을 피해 끝없이 점프하세요!" },
+            { id: 2, title: "벽돌깨기", icon: "🧱", color: "bg-orange-100", desc: "공을 튀겨 모든 벽돌을 파괴하세요." },
+            { id: 3, title: "퍼즐맞추기", icon: "🧩", color: "bg-blue-100", desc: "흩어진 조각을 맞춰 그림을 완성하세요." },
+            { id: 4, title: "레이싱", icon: "🏎️", color: "bg-red-100", desc: "가장 빠른 속도로 서킷을 완주하세요." },
+            { id: 5, title: "카드뒤집기", icon: "🃏", color: "bg-purple-100", desc: "같은 그림의 카드를 찾아 기억력을 테스트하세요." },
+            { id: 6, title: "테트리스", icon: "👾", color: "bg-yellow-100", desc: "블록을 쌓아 라인을 제거하세요." },
+            { id: 7, title: "슈팅게임", icon: "🚀", color: "bg-indigo-100", desc: "우주선을 조종하여 적들을 물리치세요." },
+            { id: 8, title: "스네이크", icon: "🐍", color: "bg-emerald-100", desc: "꼬리가 닿지 않게 사과를 먹으며 성장하세요." },
+            { id: 9, title: "두더지", icon: "🔨", color: "bg-amber-100", desc: "튀어나오는 두더지를 빠르게 잡으세요!" }
+        ];
+
+        // 로컬 스토리지 키
+        const STORAGE_KEY = 'miniGamePortalCounts';
+
+        // --- 2. 초기화 및 렌더링 ---
+        document.addEventListener('DOMContentLoaded', () => {
+            renderGrid();
+            updateTotalPlays();
+        });
+
+        // 저장된 카운트 가져오기
+        function getCounts() {
+            const data = localStorage.getItem(STORAGE_KEY);
+            return data ? JSON.parse(data) : {};
+        }
+
+        // 카운트 저장하기
+        function saveCount(id) {
+            const counts = getCounts();
+            counts[id] = (counts[id] || 0) + 1;
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(counts));
+            return counts[id];
+        }
+
+        // 그리드 그리기
+        function renderGrid() {
+            const grid = document.getElementById('game-grid');
+            const counts = getCounts();
+            
+            grid.innerHTML = ''; // 초기화
+
+            games.forEach(game => {
+                const count = counts[game.id] || 0;
+                
+                // 카드 요소 생성
+                const card = document.createElement('div');
+                card.className = `game-card flex flex-col items-center justify-center p-3 rounded-2xl shadow-sm border border-gray-100 cursor-pointer ${game.color} aspect-square`;
+                card.onclick = () => openGame(game);
+
+                card.innerHTML = `
+                    <div class="text-3xl mb-2 filter drop-shadow-sm">${game.icon}</div>
+                    <div class="font-bold text-sm text-gray-700 truncate w-full text-center">${game.title}</div>
+                    <div class="mt-2 text-xs bg-white/80 px-2 py-1 rounded-full text-gray-500 font-medium">
+                        ▶ <span id="count-disp-${game.id}">${count}</span>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // 총 실행 횟수 업데이트 (헤더)
+        function updateTotalPlays() {
+            const counts = getCounts();
+            const total = Object.values(counts).reduce((a, b) => a + b, 0);
+            document.getElementById('total-plays').innerText = total.toLocaleString();
+        }
+
+        // --- 3. 화면 전환 로직 ---
+
+        // 게임 상세 화면 열기
+        function openGame(game) {
+            // 1. 카운트 증가 및 저장
+            const newCount = saveCount(game.id);
+            
+            // 2. 메인 화면 업데이트 (돌아왔을 때 반영되도록)
+            const countDisp = document.getElementById(`count-disp-${game.id}`);
+            if(countDisp) countDisp.innerText = newCount;
+            updateTotalPlays();
+
+            // 3. 상세 화면 데이터 채우기
+            document.getElementById('detail-title').innerText = game.title;
+            document.getElementById('detail-icon').innerText = game.icon;
+            document.getElementById('detail-count').innerText = newCount;
+            document.getElementById('detail-desc').innerText = game.desc;
+
+            // 4. 화면 전환 애니메이션
+            const gridView = document.getElementById('grid-view');
+            const detailView = document.getElementById('detail-view');
+
+            gridView.classList.add('hidden');
+            detailView.classList.remove('hidden');
+            
+            // 스크롤 최상단으로 이동
+            document.getElementById('main-content').scrollTop = 0;
+        }
+
+        // 목록으로 돌아가기
+        function goBack() {
+            const gridView = document.getElementById('grid-view');
+            const detailView = document.getElementById('detail-view');
+
+            detailView.classList.add('hidden');
+            gridView.classList.remove('hidden');
+        }
+
+    </script>
+</body>
+</html>
